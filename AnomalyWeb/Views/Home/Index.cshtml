@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <img src="https://images4.alphacoders.com/191/191388.png" style="width:100%;max-height:300px" alt="ASP.NET" class="img-responsive" />
+
+        </div>
+    </div>
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>TRANSFERENCIAS</h2>
+        <table id="transferencias">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Anomaly</th>
+                    <th>Money</th>
+                    <th>ExpectedValue</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    #transferencias {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #transferencias td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #transferencias tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #transferencias tr:hover {
+            background-color: #ddd;
+        }
+
+        #transferencias th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+<script>
+    let tableRef = document.getElementById("transferencias").getElementsByTagName('tbody')[0];
+    function loginFirst() {
+        var identify = "/api/Anomaly/detectAnomalies"
+        var request = new XMLHttpRequest();
+
+        request.open("GET", identify, true);
+
+        request.onload = function () {
+            var json = JSON.parse(request.responseText);
+            showListUsers(json)
+        };
+
+        request.send();
+    }
+
+
+    function showListUsers(json) {
+        var new_tbody = document.createElement('tbody');
+        tableRef.parentNode.replaceChild(new_tbody, tableRef)
+        json.forEach(transferencia => {
+            let newRow = new_tbody.insertRow(-1);            
+            let newCellTimestamp = newRow.insertCell(0);
+            let newCellAnomaly = newRow.insertCell(1);
+            let newCellMoney = newRow.insertCell(2);
+            let newCellExpectedValue = newRow.insertCell(3);
+            
+
+            let newText = document.createTextNode(transferencia.value + " €");
+            newCellMoney.appendChild(newText);
+            newText = document.createTextNode(transferencia.timestamp);
+            newCellTimestamp.appendChild(newText);
+            newText = document.createTextNode(transferencia.anomaly);
+            newCellAnomaly.appendChild(newText);
+            newText = document.createTextNode(transferencia.expectedValue + " €");
+            newCellExpectedValue.appendChild(newText);
+        })
+
+    }
+
+    loginFirst();
+</script>
